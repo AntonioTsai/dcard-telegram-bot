@@ -16,13 +16,18 @@ var headers = {
     'x-csrf-token' : ''
 };
 
+function setCookies(cookies) {
+    headers.cookie = '';
+    cookies.forEach(d => {
+        headers.cookie += d.split(';')[0] + '; ';
+    });
+}
+
 request(url + '/login', (error, response, body) => {
     if(!error && response.statusCode == 200) {
         let $ = cheerio.load(body);
         headers['x-csrf-token'] = $('script').text().match(regExp)[0].split('"').slice(-1)[0];
-        response.headers['set-cookie'].forEach(d => {
-           headers.cookie += d.split(';')[0] + '; ';
-        });
+        setCookies(response.headers['set-cookie']);
 
         console.log('CSRF-Token', headers['x-csrf-token']);
         console.log('Cookie', headers['cookie']);
