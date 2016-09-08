@@ -42,6 +42,17 @@ request(url + '/login', (error, response, body) => {
         };
         request.post(options, (error, response, body) => {
             console.log(response.statusCode);
+            headers['x-csrf-token'] = response.headers['x-csrf-token'];
+            setCookies(response.headers['set-cookie']);
+
+            console.log('CSRF-Token', headers['x-csrf-token']);
+            console.log('Cookie', headers['cookie']);
+            if(!error && response.statusCode == '204') {
+                request(url + '/_api/dcard', {headers}, (error, response, body) => {
+                    console.log('Status: ', response.statusCode);
+                    console.log('Body: ', body);
+                });
+            }
         });
     }
 });
