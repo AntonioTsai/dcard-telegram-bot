@@ -1,12 +1,12 @@
-/**
- * Created by antonio on 9/8/16.
- */
-
 const request = require('request');
 const cheerio = require('cheerio');
+const Telegram = require('node-telegram-bot-api');
+const config = require('./config.js');
 const url = 'https://www.dcard.tw';
-const email = '';
-const pwd = '';
+const email = config.email;
+const pwd = config.password;
+const token = config.token;
+const bot = new Telegram(token, {polling: true});
 
 var regExp = /csrfToken":"[^"]+/g;
 var headers = {
@@ -17,10 +17,12 @@ var headers = {
 };
 
 function setCookies(cookies) {
-    headers.cookie = '';
-    cookies.forEach(d => {
-        headers.cookie += d.split(';')[0] + '; ';
-    });
+    if(cookies) {
+        headers.cookie = '';
+        cookies.forEach(d => {
+            headers.cookie += d.split(';')[0] + '; ';
+        });
+    }
 }
 
 request(url + '/login', (error, response, body) => {
