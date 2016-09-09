@@ -15,7 +15,6 @@ var headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
     'x-csrf-token': ''
 };
-var card = {};
 
 const setCookies = (cookies) => {
     if(cookies) {
@@ -26,15 +25,13 @@ const setCookies = (cookies) => {
     }
 };
 
-const getDcard = () => {
+const getDcard = (chatId) => {
     request(url + '/login', (error, response, body) => {
         if(!error && response.statusCode == 200) {
             let $ = cheerio.load(body);
             headers['x-csrf-token'] = $('script').text().match(regExp)[0].split('"').slice(-1)[0];
             setCookies(response.headers['set-cookie']);
 
-            console.log('CSRF-Token', headers['x-csrf-token']);
-            console.log('Cookie', headers['cookie']);
             let options = {
                 url: url + '/_api/sessions',
                 headers: headers,
@@ -49,16 +46,14 @@ const getDcard = () => {
                 headers['x-csrf-token'] = response.headers['x-csrf-token'];
                 setCookies(response.headers['set-cookie']);
 
-                console.log('CSRF-Token', headers['x-csrf-token']);
-                console.log('Cookie', headers['cookie']);
                 if(!error && response.statusCode == '204') {
                     request(url + '/_api/dcard', {headers}, (error, response, body) => {
                         if(!error && response.statusCode == '200') {
-                            card = JSON.parse(body);
-                            console.log(card);
+                            let card = JSON.parse(body).dcard;
+                            bot.sendPhoto(chatId, card.avatar, {caption: card.gender + ' ' + card.school + ' ' + card.department});
                         }
                         console.log('Status: ', response.statusCode);
-                        console.log('Body: ', body);
+                        console.log(JSON.parse(body));
                     });
                 }
             });
@@ -66,11 +61,7 @@ const getDcard = () => {
     });
 };
 
-bot.on('message', msg => {
-    console.log(msg);
-    bot.sendMessage(msg.chat.id, 'Hi, ' + msg.from.username)
-        .then((msg) => {
-            bot.sendPhoto(msg.chat.id, 'http://fakeimg.pl/480x270/2CA7E8/?text=Antonio%20Tsai', {caption: 'Google Logo'});
-        });
+bot.onText(/\/dcard/, msg => {
+    bot.sendMessage(msg.chat.id, 'Dcard is loading... Please Wait');
+    getDcard(msg.chat.id);
 });
-q
