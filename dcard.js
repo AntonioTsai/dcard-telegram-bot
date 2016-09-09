@@ -13,8 +13,9 @@ var headers = {
     cookie: '',
     'content-type': 'application/json',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
-    'x-csrf-token' : ''
+    'x-csrf-token': ''
 };
+var card = {};
 
 function setCookies(cookies) {
     if(cookies) {
@@ -51,10 +52,22 @@ request(url + '/login', (error, response, body) => {
             console.log('Cookie', headers['cookie']);
             if(!error && response.statusCode == '204') {
                 request(url + '/_api/dcard', {headers}, (error, response, body) => {
+                    if(!error && response.statusCode == '200') {
+                        card = JSON.parse(body);
+                        console.log(card);
+                    }
                     console.log('Status: ', response.statusCode);
                     console.log('Body: ', body);
                 });
             }
         });
     }
+});
+
+bot.on('message', msg => {
+    console.log(msg);
+    bot.sendMessage(msg.chat.id, 'Hi, ' + msg.from.username)
+        .then((msg) => {
+            bot.sendPhoto(msg.chat.id, 'http://fakeimg.pl/480x270/2CA7E8/?text=Antonio%20Tsai', {caption: 'Google Logo'});
+        });
 });
