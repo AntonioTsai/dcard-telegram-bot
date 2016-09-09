@@ -17,52 +17,54 @@ var headers = {
 };
 var card = {};
 
-function setCookies(cookies) {
+const setCookies = (cookies) => {
     if(cookies) {
         headers.cookie = '';
         cookies.forEach(d => {
             headers.cookie += d.split(';')[0] + '; ';
         });
     }
-}
+};
 
-request(url + '/login', (error, response, body) => {
-    if(!error && response.statusCode == 200) {
-        let $ = cheerio.load(body);
-        headers['x-csrf-token'] = $('script').text().match(regExp)[0].split('"').slice(-1)[0];
-        setCookies(response.headers['set-cookie']);
-
-        console.log('CSRF-Token', headers['x-csrf-token']);
-        console.log('Cookie', headers['cookie']);
-        let options = {
-            url: url + '/_api/sessions',
-            headers: headers,
-            json: true,
-            body: {
-                email: email,
-                password: pwd
-            }
-        };
-        request.post(options, (error, response, body) => {
-            console.log(response.statusCode);
-            headers['x-csrf-token'] = response.headers['x-csrf-token'];
+const getDcard = () => {
+    request(url + '/login', (error, response, body) => {
+        if(!error && response.statusCode == 200) {
+            let $ = cheerio.load(body);
+            headers['x-csrf-token'] = $('script').text().match(regExp)[0].split('"').slice(-1)[0];
             setCookies(response.headers['set-cookie']);
 
             console.log('CSRF-Token', headers['x-csrf-token']);
             console.log('Cookie', headers['cookie']);
-            if(!error && response.statusCode == '204') {
-                request(url + '/_api/dcard', {headers}, (error, response, body) => {
-                    if(!error && response.statusCode == '200') {
-                        card = JSON.parse(body);
-                        console.log(card);
-                    }
-                    console.log('Status: ', response.statusCode);
-                    console.log('Body: ', body);
-                });
-            }
-        });
-    }
-});
+            let options = {
+                url: url + '/_api/sessions',
+                headers: headers,
+                json: true,
+                body: {
+                    email: email,
+                    password: pwd
+                }
+            };
+            request.post(options, (error, response, body) => {
+                console.log(response.statusCode);
+                headers['x-csrf-token'] = response.headers['x-csrf-token'];
+                setCookies(response.headers['set-cookie']);
+
+                console.log('CSRF-Token', headers['x-csrf-token']);
+                console.log('Cookie', headers['cookie']);
+                if(!error && response.statusCode == '204') {
+                    request(url + '/_api/dcard', {headers}, (error, response, body) => {
+                        if(!error && response.statusCode == '200') {
+                            card = JSON.parse(body);
+                            console.log(card);
+                        }
+                        console.log('Status: ', response.statusCode);
+                        console.log('Body: ', body);
+                    });
+                }
+            });
+        }
+    });
+};
 
 bot.on('message', msg => {
     console.log(msg);
@@ -71,3 +73,4 @@ bot.on('message', msg => {
             bot.sendPhoto(msg.chat.id, 'http://fakeimg.pl/480x270/2CA7E8/?text=Antonio%20Tsai', {caption: 'Google Logo'});
         });
 });
+q
