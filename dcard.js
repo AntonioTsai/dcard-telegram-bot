@@ -50,10 +50,18 @@ const getDcard = (chatId) => {
                     request(url + '/_api/dcard', {headers}, (error, response, body) => {
                         if(!error && response.statusCode == '200') {
                             let card = JSON.parse(body).dcard;
-                            bot.sendPhoto(chatId, card.avatar, {caption: card.gender + ' ' + card.school + ' ' + card.department});
+                            bot.sendPhoto(chatId, card.avatar, {caption: card.gender + ' ' + card.school + ' ' + card.department})
+                                .catch((e) => {
+                                    /*
+                                     * Error: 400 {"ok":false,"error_code":400,"description":"Wrong file identifier\/HTTP URL specified"}
+                                     * May cause by wrong headers(e.g., 'content-type:text/plain; charset=utf-8')
+                                     */
+                                    console.log(e);
+                                    bot.sendMessage(chatId, 'Encounter an unknown error\n' +
+                                        'The Dcard avatar is unavailable.\n' +
+                                        'Here is the avatar URL.\n' + card.avatar);
+                                });
                         }
-                        console.log('Status: ', response.statusCode);
-                        console.log(JSON.parse(body));
                     });
                 }
             });
@@ -62,6 +70,9 @@ const getDcard = (chatId) => {
 };
 
 bot.onText(/\/dcard/, msg => {
-    bot.sendMessage(msg.chat.id, 'Dcard is loading... Please Wait');
-    getDcard(msg.chat.id);
+    //1console.log(msg);
+    bot.sendMessage(msg.chat.id, 'Dcard is loading... Please Wait')
+        .then(msg => {
+            getDcard(msg.chat.id);
+        });
 });
