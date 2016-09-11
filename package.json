@@ -6,7 +6,7 @@
   "dependencies": {
     "cheerio": "^0.22.0",
     "node-telegram-bot-api": "^0.23.3",
-    "request": "^2.74.0",
+    "request": "^2.74.0"
   },
   "devDependencies": {},
   "scripts": {
