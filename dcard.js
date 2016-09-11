@@ -19,9 +19,16 @@ var headers = {
 const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
     headers['x-csrf-token'] = csrfToken;
     if(cookies) {
-        headers.cookie = '';
         cookies.forEach(d => {
-            headers.cookie += d.split(';')[0] + '; ';
+            let cookieName = d.split('=')[0];
+            let cookieContent = d.split(';')[0] + '; ';
+            let reg = new RegExp(cookieName + '=[^ ]+ ', 'g');
+            // Replace
+            headers.cookie = headers.cookie.replace(reg, cookieContent);
+            // Todo Check d in cookie
+            if(!headers.cookie.match(cookieName)) {
+                headers.cookie += cookieContent;
+            }
         });
     }
 };
