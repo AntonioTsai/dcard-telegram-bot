@@ -96,3 +96,11 @@ bot.onText(/\/dcard/, msg => {
             getDcard(msg.chat.id);
         });
 });
+
+bot.onText(/\/invite/, msg => {
+    //1console.log(msg);
+    bot.sendMessage(msg.chat.id, 'Sending invite... Please Wait')
+        .then(msg => {
+            sendInvitation(msg.chat.id);
+        });
+});
