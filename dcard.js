@@ -1,3 +1,4 @@
+process.env.TZ = 'Asia/Taipei';
 const request = require('request');
 const cheerio = require('cheerio');
 const Telegram = require('node-telegram-bot-api');
@@ -7,9 +8,7 @@ const email = config.email;
 const pwd = config.password;
 const token = config.token;
 const bot = new Telegram(token, {polling: true});
-
-var regExp = /csrfToken":"[^"]+/g;
-var headers = {
+const headers = {
     cookie: '',
     'content-type': 'application/json',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
@@ -25,7 +24,7 @@ const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
             let reg = new RegExp(cookieName + '=[^ ]+ ', 'g');
             // Replace
             headers.cookie = headers.cookie.replace(reg, cookieContent);
-            // Todo Check d in cookie
+            // Check d in cookie
             if(!headers.cookie.match(cookieName)) {
                 headers.cookie += cookieContent;
             }
@@ -37,6 +36,7 @@ const getDcard = (chatId) => {
     request(url + '/login', (error, response, body) => {
         if(!error && response.statusCode == 200) {
             let $ = cheerio.load(body);
+            let regExp = /csrfToken":"[^"]+/g;
             setHeaders(response.headers['set-cookie'], $('script').text().match(regExp)[0].split('"').slice(-1)[0]);
 
             let options = {
