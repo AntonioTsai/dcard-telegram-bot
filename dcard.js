@@ -15,23 +15,6 @@ const headers = {
     'x-csrf-token': ''
 };
 
-const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
-    headers['x-csrf-token'] = csrfToken;
-    if(cookies) {
-        cookies.forEach(d => {
-            let cookieName = d.split('=')[0];
-            let cookieContent = d.split(';')[0] + '; ';
-            let reg = new RegExp(cookieName + '=[^ ]+ ', 'g');
-            // Replace
-            headers.cookie = headers.cookie.replace(reg, cookieContent);
-            // Check d in cookie
-            if(!headers.cookie.match(cookieName)) {
-                headers.cookie += cookieContent;
-            }
-        });
-    }
-};
-
 const getDcard = (chatId) => {
     request(url + '/login', (error, response, body) => {
         if(!error && response.statusCode == 200) {
@@ -92,6 +75,23 @@ const sendAcceptance = (chatId) => {
         console.log(error, 'Status Code', response.statusCode);
         console.log(body);
     });
+};
+
+const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
+    headers['x-csrf-token'] = csrfToken;
+    if(cookies) {
+        cookies.forEach(d => {
+            let cookieName = d.split('=')[0];
+            let cookieContent = d.split(';')[0] + '; ';
+            let reg = new RegExp(cookieName + '=[^ ]+ ', 'g');
+            // Replace
+            headers.cookie = headers.cookie.replace(reg, cookieContent);
+            // Check d in cookie
+            if(!headers.cookie.match(cookieName)) {
+                headers.cookie += cookieContent;
+            }
+        });
+    }
 };
 
 bot.onText(/\/dcard/, msg => {
