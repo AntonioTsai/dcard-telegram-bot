@@ -1,3 +1,4 @@
+process.env.TZ = 'Asia/Taipei';
 const request = require('request');
 const cheerio = require('cheerio');
 const Telegram = require('node-telegram-bot-api');
@@ -7,29 +8,18 @@ const email = config.email;
 const pwd = config.password;
 const token = config.token;
 const bot = new Telegram(token, {polling: true});
-
-var regExp = /csrfToken":"[^"]+/g;
-var headers = {
+const headers = {
     cookie: '',
     'content-type': 'application/json',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
     'x-csrf-token': ''
 };
 
-const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
-    headers['x-csrf-token'] = csrfToken;
-    if(cookies) {
-        headers.cookie = '';
-        cookies.forEach(d => {
-            headers.cookie += d.split(';')[0] + '; ';
-        });
-    }
-};
-
 const getDcard = (chatId) => {
     request(url + '/login', (error, response, body) => {
         if(!error && response.statusCode == 200) {
             let $ = cheerio.load(body);
+            let regExp = /csrfToken":"[^"]+/g;
             setHeaders(response.headers['set-cookie'], $('script').text().match(regExp)[0].split('"').slice(-1)[0]);
 
             let options = {
@@ -47,7 +37,7 @@ const getDcard = (chatId) => {
                 if(!error && response.statusCode == '204') {
                     request(url + '/_api/dcard', {headers}, (error, response, body) => {
                         if(!error && response.statusCode == '200') {
-                            setHeaders(response.headers['set-cookie'], $('script').text().match(regExp)[0].split('"').slice(-1)[0]);
+                            setHeaders(response.headers['set-cookie'], response.headers['x-csrf-token']);
                             let card = JSON.parse(body).dcard;
                             bot.sendPhoto(chatId, card.avatar, {caption: card.gender + ' ' + card.school + ' ' + card.department})
                                 .catch((e) => {
@@ -68,10 +58,54 @@ const getDcard = (chatId) => {
     });
 };
 
+const sendAcceptance = (chatId) => {
+    let option = {
+        url: url + '/_api/dcard/accept',
+        headers: headers,
+        json: true,
+        body: {firstMessage: "Hi from Telegram."},
+    };
+    request.post(option, (error, response, body) => {
+        if(!error && response.statusCode == '200') {
+            bot.sendMessage(chatId, 'Accepted.');
+        } else {
+            let message = error + ' ' + response.statusCode;
+            bot.sendMessage(chatId, 'Oops! Something went wrong.\nHow about accept him/her yourself?');
+        }
+        console.log(error, 'Status Code', response.statusCode);
+        console.log(body);
+    });
+};
+
+const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
+    headers['x-csrf-token'] = csrfToken;
+    if(cookies) {
+        cookies.forEach(d => {
+            let cookieName = d.split('=')[0];
+            let cookieContent = d.split(';')[0] + '; ';
+            let reg = new RegExp(cookieName + '=[^ ]+ ', 'g');
+            // Replace
+            headers.cookie = headers.cookie.replace(reg, cookieContent);
+            // Check d in cookie
+            if(!headers.cookie.match(cookieName)) {
+                headers.cookie += cookieContent;
+            }
+        });
+    }
+};
+
 bot.onText(/\/dcard/, msg => {
     //1console.log(msg);
     bot.sendMessage(msg.chat.id, 'Dcard is loading... Please Wait')
         .then(msg => {
             getDcard(msg.chat.id);
+        });
+});
+
+bot.onText(/\/accept/, msg => {
+    //1console.log(msg);
+    bot.sendMessage(msg.chat.id, 'Sending invite... Please Wait')
+        .then(msg => {
+            sendAcceptance(msg.chat.id);
         });
 });
