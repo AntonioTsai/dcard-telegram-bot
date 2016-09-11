@@ -1,26 +1,29 @@
-/**
- * Created by antonio on 9/8/16.
- */
-
 const request = require('request');
 const cheerio = require('cheerio');
+const Telegram = require('node-telegram-bot-api');
+const config = require('./config.js');
 const url = 'https://www.dcard.tw';
-const email = '';
-const pwd = '';
+const email = config.email;
+const pwd = config.password;
+const token = config.token;
+const bot = new Telegram(token, {polling: true});
 
 var regExp = /csrfToken":"[^"]+/g;
 var headers = {
     cookie: '',
     'content-type': 'application/json',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
-    'x-csrf-token' : ''
+    'x-csrf-token': ''
 };
+var card = {};
 
 function setCookies(cookies) {
-    headers.cookie = '';
-    cookies.forEach(d => {
-        headers.cookie += d.split(';')[0] + '; ';
-    });
+    if(cookies) {
+        headers.cookie = '';
+        cookies.forEach(d => {
+            headers.cookie += d.split(';')[0] + '; ';
+        });
+    }
 }
 
 request(url + '/login', (error, response, body) => {
@@ -49,10 +52,22 @@ request(url + '/login', (error, response, body) => {
             console.log('Cookie', headers['cookie']);
             if(!error && response.statusCode == '204') {
                 request(url + '/_api/dcard', {headers}, (error, response, body) => {
+                    if(!error && response.statusCode == '200') {
+                        card = JSON.parse(body);
+                        console.log(card);
+                    }
                     console.log('Status: ', response.statusCode);
                     console.log('Body: ', body);
                 });
             }
         });
     }
+});
+
+bot.on('message', msg => {
+    console.log(msg);
+    bot.sendMessage(msg.chat.id, 'Hi, ' + msg.from.username)
+        .then((msg) => {
+            bot.sendPhoto(msg.chat.id, 'http://fakeimg.pl/480x270/2CA7E8/?text=Antonio%20Tsai', {caption: 'Google Logo'});
+        });
 });
