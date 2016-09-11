@@ -47,7 +47,7 @@ const getDcard = (chatId) => {
                 if(!error && response.statusCode == '204') {
                     request(url + '/_api/dcard', {headers}, (error, response, body) => {
                         if(!error && response.statusCode == '200') {
-                            setHeaders(response.headers['set-cookie'], $('script').text().match(regExp)[0].split('"').slice(-1)[0]);
+                            setHeaders(response.headers['set-cookie'], response.headers['x-csrf-token']);
                             let card = JSON.parse(body).dcard;
                             bot.sendPhoto(chatId, card.avatar, {caption: card.gender + ' ' + card.school + ' ' + card.department})
                                 .catch((e) => {
@@ -64,6 +64,27 @@ const getDcard = (chatId) => {
                     });
                 }
             });
+        }
+    });
+};
+
+const sendInvitation = (chatId) => {
+    let option = {
+        url: url + '/_api/dcard/accept',
+        headers: headers,
+        json: true,
+        body: {firstMessage: "Hi from Telegram."},
+    };
+    request.post(option, (error, response, body) => {
+        if(!error && response.statusCode == '200') {
+            bot.send(chatId, 'Invite sent.');
+        } else {
+            let message = error + ' ' + response.statusCode;
+            console.log(error, 'Status Code', response.statusCode);
+            console.log(body);
+            //bot.sendMessage(chatId, error);
+            //bot.sendMessage(chatId, response);
+            //bot.sendMessage(chatId, body);
         }
     });
 };
