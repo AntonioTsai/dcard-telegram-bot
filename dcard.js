@@ -75,7 +75,7 @@ const getDcard = (chatId) => {
     });
 };
 
-const sendInvitation = (chatId) => {
+const sendAcceptance = (chatId) => {
     let option = {
         url: url + '/_api/dcard/accept',
         headers: headers,
@@ -84,15 +84,13 @@ const sendInvitation = (chatId) => {
     };
     request.post(option, (error, response, body) => {
         if(!error && response.statusCode == '200') {
-            bot.send(chatId, 'Invite sent.');
+            bot.sendMessage(chatId, 'Accepted.');
         } else {
             let message = error + ' ' + response.statusCode;
-            console.log(error, 'Status Code', response.statusCode);
-            console.log(body);
-            //bot.sendMessage(chatId, error);
-            //bot.sendMessage(chatId, response);
-            //bot.sendMessage(chatId, body);
+            bot.sendMessage(chatId, 'Oops! Something went wrong.\nHow about accept him/her yourself?');
         }
+        console.log(error, 'Status Code', response.statusCode);
+        console.log(body);
     });
 };
 
@@ -104,10 +102,10 @@ bot.onText(/\/dcard/, msg => {
         });
 });
 
-bot.onText(/\/invite/, msg => {
+bot.onText(/\/accept/, msg => {
     //1console.log(msg);
     bot.sendMessage(msg.chat.id, 'Sending invite... Please Wait')
         .then(msg => {
-            sendInvitation(msg.chat.id);
+            sendAcceptance(msg.chat.id);
         });
 });
