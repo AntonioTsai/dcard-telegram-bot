@@ -94,18 +94,18 @@ const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
     }
 };
 
-bot.onText(/\/dcard/, msg => {
-    //1console.log(msg);
-    bot.sendMessage(msg.chat.id, 'Dcard is loading... Please Wait')
-        .then(msg => {
-            getDcard(msg.chat.id);
-        });
-});
-
 bot.onText(/\/accept/, msg => {
     //1console.log(msg);
     bot.sendMessage(msg.chat.id, 'Sending invite... Please Wait')
         .then(msg => {
             sendAcceptance(msg.chat.id);
+        });
+});
+
+bot.onText(/\/dcard/, msg => {
+    //1console.log(msg);
+    bot.sendMessage(msg.chat.id, 'Dcard is loading... Please Wait')
+        .then(msg => {
+            getDcard(msg.chat.id);
         });
 });
