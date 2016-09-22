@@ -39,16 +39,12 @@ const getDcard = (chatId) => {
                         if(!error && response.statusCode == '200') {
                             setHeaders(response.headers['set-cookie'], response.headers['x-csrf-token']);
                             let card = JSON.parse(body).dcard;
-                            bot.sendPhoto(chatId, card.avatar, {caption: card.gender + ' ' + card.school + ' ' + card.department})
+                            let caption = card.gender + ' ' + card.school + ' ' + card.department;
+                            bot.sendPhoto(chatId, card.avatar, {caption: caption})
                                 .catch((e) => {
-                                    /*
-                                     * Error: 400 {"ok":false,"error_code":400,"description":"Wrong file identifier\/HTTP URL specified"}
-                                     * May cause by wrong headers(e.g., 'content-type:text/plain; charset=utf-8')
-                                     */
-                                    console.log(e);
-                                    bot.sendMessage(chatId, 'Encounter an unknown error\n' +
-                                        'The Dcard avatar is unavailable.\n' +
-                                        'Here is the avatar URL.\n' + card.avatar);
+                                    request({url: card.avatar, encoding: null}, (error, response, body) => {
+                                        bot.sendPhoto(chatId, body, {caption: caption});
+                                    });
                                 });
                         }
                     });
