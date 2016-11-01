@@ -59,7 +59,7 @@ const sendAcceptance = (chatId) => {
         url: url + '/_api/dcard/accept',
         headers: headers,
         json: true,
-        body: {firstMessage: "Hi from Telegram."},
+        body: {firstMessage: "Hi by telegram bot."},
     };
     request.post(option, (error, response, body) => {
         if(!error && response.statusCode == '200') {
