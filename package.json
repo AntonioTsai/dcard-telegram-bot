@@ -4,9 +4,9 @@
   "description": "A telegram bot that show dcard today's friend",
   "main": "dcard.js",
   "dependencies": {
+    "axios": "^0.16.2",
     "cheerio": "^0.22.0",
     "node-telegram-bot-api": "^0.23.3",
-    "request": "^2.74.0"
   },
   "devDependencies": {},
   "scripts": {
