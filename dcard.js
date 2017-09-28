@@ -21,7 +21,11 @@ const getCSRFToken = () => {
         // Send request to /_ping to get x-csrf-token
         rq.get('/_ping', (error, response, body) => {
             if (!error) {
-                return resolve(response.headers['x-csrf-token']);
+                if (response.headers['x-csrf-token'] != undefined) {
+                    return resolve(response.headers['x-csrf-token']);
+                } else {
+                    return reject('No x-csrf-token in headers');
+                }
             }
             return reject(error);
         });
