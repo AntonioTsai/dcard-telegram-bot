@@ -18,6 +18,7 @@ exports.sendInvitation;
 
 const getCSRFToken = async () => {
     try {
+        // Request '/_ping' to get x-csrf-token
         const options = {
             method: 'GET',
             uri: '/_ping',
