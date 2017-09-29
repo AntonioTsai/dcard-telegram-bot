@@ -36,25 +36,21 @@ const getCSRFToken = async () => {
 
 const login = async () => {
     try {
-        // Get CSRF Token
-        const CSRFToken = await getCSRFToken();
-        var options = {
+        // Request '/sessions' to login
+        const options = {
+            method: "POST",
+            uri: '/sessions',
+            headers: {
+                'x-csrf-token': await getCSRFToken()
+            },
+            json: true,
             body: {
                 email: config.email,
                 password: config.password
-            },
-            headers: {
-                'x-csrf-token': CSRFToken
-            },
-            json: true,
-            uri: '/sessions'
-        }
-        rq.post(options, (error, response, body) => {
-            if (!error) {
-                console.log(response.statusCode);
-                success = true;
             }
-        });
+        }
+
+        return await promiseRequest(options);
     } catch (e) {
         console.log(e);
     }
