@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const config = require('./config.js');
 const request = require('request');
 var rq = request.defaults({
-    baseUrl: 'https://www.dcard.tw/_api/',
+    baseUrl: 'https://www.dcard.tw/',
     headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
     },
@@ -18,10 +18,10 @@ exports.sendInvitation;
 
 const getCSRFToken = async () => {
     try {
-        // Request '/_ping' to get x-csrf-token
+        // Request '/_api/_ping' to get x-csrf-token
         const options = {
             method: 'GET',
-            uri: '/_ping',
+            uri: '/_api/_ping',
         }
         const responses = await promiseRequest(options);
 
@@ -36,10 +36,10 @@ const getCSRFToken = async () => {
 
 const login = async () => {
     try {
-        // Request '/sessions' to login
+        // Request '/_api/sessions' to login
         const options = {
             method: "POST",
-            uri: '/sessions',
+            uri: '/_api/sessions',
             headers: {
                 'x-csrf-token': await getCSRFToken()
             },
