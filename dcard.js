@@ -58,4 +58,19 @@ const login = async () => {
     }
 }
 
-login();
+const promiseRequest = (options) => {
+    return new Promise((reslove, reject) => {
+        rq(options, (error, response, body) => {
+            if (!error) {
+                return reslove({
+                    response: response,
+                    body: body
+                });
+            }
+            return reject(error);
+        });
+    });
+}
+
+login().then(d => console.log(d));
+// getCSRFToken().then(d => console.log(d));
