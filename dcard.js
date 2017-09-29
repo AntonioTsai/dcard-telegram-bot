@@ -69,6 +69,3 @@ const promiseRequest = (options) => {
         });
     });
 }
-
-login().then(d => console.log(d));
-// getCSRFToken().then(d => console.log(d));
