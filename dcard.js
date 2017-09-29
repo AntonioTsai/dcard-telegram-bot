@@ -10,7 +10,26 @@ var rq = request.defaults({
 });
 
 // Return today's Dcard infomation
-exports.getDcard;
+exports.getDcard = async () => {
+    try {
+        const response = await login();
+        // Check if login success
+        if (response.statusCode == 204) {
+            const options = {
+                method: 'GET',
+                uri: '/_api/dcard',
+                headers: {
+                    'x-csrf-token': response.headers['x-csrf-token']
+                }
+            }
+            const dcard = await promiseRequest(options);
+
+            return JSON.parse(dcard.body);
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
 
 // Send invitation request to Dcard
 exports.sendInvitation;
