@@ -29,7 +29,7 @@ const getCSRFToken = async () => {
             return responses.response.headers['x-csrf-token'];
         }
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 
 }
@@ -52,7 +52,7 @@ const login = async () => {
 
         return await promiseRequest(options);
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 
