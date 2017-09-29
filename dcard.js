@@ -16,20 +16,21 @@ exports.getDcard;
 exports.sendInvitation;
 
 
-const getCSRFToken = () => {
-    return new Promise((resolve, reject) => {
-        // Send request to /_ping to get x-csrf-token
-        rq.get('/_ping', (error, response, body) => {
-            if (!error) {
-                if (response.headers['x-csrf-token'] != undefined) {
-                    return resolve(response.headers['x-csrf-token']);
-                } else {
-                    return reject('No x-csrf-token in headers');
-                }
-            }
-            return reject(error);
-        });
-    });
+const getCSRFToken = async () => {
+    try {
+        const options = {
+            method: 'GET',
+            uri: '/_ping',
+        }
+        const responses = await promiseRequest(options);
+
+        if (responses.response.headers['x-csrf-token'] != undefined) {
+            return responses.response.headers['x-csrf-token'];
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
 }
 
 const login = async () => {
