@@ -23,10 +23,10 @@ const getCSRFToken = async () => {
             method: 'GET',
             uri: '/_api/_ping',
         }
-        const responses = await promiseRequest(options);
+        const response = await promiseRequest(options);
 
-        if (responses.response.headers['x-csrf-token'] != undefined) {
-            return responses.response.headers['x-csrf-token'];
+        if (response.headers['x-csrf-token'] != undefined) {
+            return response.headers['x-csrf-token'];
         }
     } catch (e) {
         console.error(e);
@@ -55,15 +55,13 @@ const login = async () => {
         console.error(e);
     }
 }
+exports.login = login;
 
 const promiseRequest = (options) => {
     return new Promise((reslove, reject) => {
         rq(options, (error, response, body) => {
             if (!error) {
-                return reslove({
-                    response: response,
-                    body: body
-                });
+                return reslove(response);
             }
             return reject(error);
         });
