@@ -11,23 +11,19 @@ var rq = request.defaults({
     jar: cookieJar
 });
 
-// Return today's Dcard infomation
+// Return today's Dcard infomation in JSON format
 exports.getDcard = async () => {
     try {
-        const response = await login();
-        // Check if login success
-        if (response.statusCode == 204) {
-            const options = {
-                method: 'GET',
-                uri: '/_api/dcard',
-                headers: {
-                    'x-csrf-token': response.headers['x-csrf-token']
-                }
-            }
-            const dcard = await promiseRequest(options);
-
-            return JSON.parse(dcard.body);
+        const options = {
+            method: 'GET',
+            uri: '/_api/dcard',
+            headers: {
+                'x-csrf-token': isLogin() ? await getCSRFToken() : await login(),
+            },
         }
+        const dcard = await promiseRequest(options);
+
+        return JSON.parse(dcard.body);
     } catch (e) {
         console.error(e);
     }
