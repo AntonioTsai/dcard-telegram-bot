@@ -11,6 +11,7 @@ var rq = request.defaults({
     jar: cookieJar
 });
 
+
 // Return today's Dcard infomation in JSON format
 exports.getDcard = async () => {
     try {
@@ -95,7 +96,6 @@ const getCSRFToken = async () => {
     }
 }
 
-
 // Return x-csrf-token when login success
 const login = async () => {
     try {
@@ -124,7 +124,6 @@ const login = async () => {
         console.error(e);
     }
 }
-exports.login = login;
 
 const promiseRequest = (options) => {
     return new Promise((reslove, reject) => {
