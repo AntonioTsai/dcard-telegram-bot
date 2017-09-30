@@ -1,12 +1,13 @@
 const cheerio = require('cheerio');
 const config = require('./config.js');
 const request = require('request');
+var cookieJar = request.jar();
 var rq = request.defaults({
     baseUrl: 'https://www.dcard.tw/',
     headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
     },
-    jar: true
+    jar: cookieJar
 });
 
 // Return today's Dcard infomation
