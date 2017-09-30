@@ -35,6 +35,7 @@ exports.getDcard = async () => {
 exports.sendInvitation;
 
 
+// Return x-csrf-token string
 const getCSRFToken = async () => {
     try {
         // Request '/_api/_ping' to get x-csrf-token
