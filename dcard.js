@@ -36,6 +36,24 @@ exports.getDcard = async () => {
 // Send invitation request to Dcard
 exports.sendInvitation;
 
+const isLogin = (url) => {
+    // Get current cookie stored in cookie jar
+    const cookies = cookieJar.getCookies(url);
+
+    // Check if current time > expires time
+    const expires = cookies.map(cookie => new Date() > cookie.expires);
+
+    // When login yet, getCookies return []
+    if (cookies.length == 0) {
+        return false;
+    }
+
+    /**
+     * All cookies are valid means still login => true
+     * Some are expire means maybe not login => false
+     */
+    return !expires.includes(true)
+}
 
 // Return x-csrf-token string
 const getCSRFToken = async () => {
