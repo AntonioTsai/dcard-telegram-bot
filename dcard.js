@@ -36,9 +36,9 @@ exports.getDcard = async () => {
 // Send invitation request to Dcard
 exports.sendInvitation;
 
-const isLogin = (url) => {
+const isLogin = () => {
     // Get current cookie stored in cookie jar
-    const cookies = cookieJar.getCookies(url);
+    const cookies = cookieJar.getCookies(host);
 
     // Check if current time > expires time
     const expires = cookies.map(cookie => new Date() > cookie.expires);
