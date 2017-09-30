@@ -71,7 +71,6 @@ const getCSRFToken = async () => {
     } catch (e) {
         console.error(e);
     }
-
 }
 
 
