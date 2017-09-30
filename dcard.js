@@ -29,8 +29,34 @@ exports.getDcard = async () => {
     }
 };
 
-// Send invitation request to Dcard
-exports.sendInvitation;
+/**
+ * Send invitation request to Dcard
+ * Return response.statusCode
+ */
+exports.sendInvitation = async (msg) => {
+    try {
+        // const login = isLogin();
+        const options = {
+            method: 'POST',
+            uri: '/_api/dcard/accept',
+            headers: {
+                'x-csrf-token': isLogin() ? await getCSRFToken() : await login(),
+            },
+            json: true,
+            body: {
+                firstMessage: msg
+            }
+        }
+        const response = await promiseRequest(options);
+
+        // Send invitation success
+        if (response.statusCode == 200) {
+            return response.statusCode;
+        }
+    } catch (e) {
+        console.log(e);
+    }
+};
 
 const isLogin = () => {
     // Get current cookie stored in cookie jar
