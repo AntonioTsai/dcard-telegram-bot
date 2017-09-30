@@ -2,15 +2,15 @@
   "name": "dcard-telegram-bot",
   "version": "0.0.0",
   "description": "A telegram bot that show dcard today's friend",
-  "main": "dcard.js",
+  "main": "index.js",
   "dependencies": {
     "cheerio": "^0.22.0",
     "node-telegram-bot-api": "^0.23.3",
-    "request": "^2.74.0"
+    "request": "^2.83.0"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node dcard.js",
+    "run": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Antonio Tsai",
