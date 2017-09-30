@@ -1,4 +1,3 @@
-const cheerio = require('cheerio');
 const config = require('./config.js');
 const request = require('request');
 var cookieJar = request.jar();
