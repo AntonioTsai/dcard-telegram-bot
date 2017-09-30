@@ -74,6 +74,8 @@ const getCSRFToken = async () => {
 
 }
 
+
+// Return x-csrf-token when login success
 const login = async () => {
     try {
         // Request '/_api/sessions' to login
@@ -89,8 +91,14 @@ const login = async () => {
                 password: config.password
             }
         }
+        const response = await promiseRequest(options);
 
-        return await promiseRequest(options);
+        // Check if login success
+        if (response.statusCode == 204) {
+            return response.headers['x-csrf-token'];
+        } else {
+            throw 'Error occued during login';
+        }
     } catch (e) {
         console.error(e);
     }
