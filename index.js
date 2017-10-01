@@ -8,12 +8,14 @@ const welcomeMessage = `Hello! I'm Dcard bot.
 By the way, I'm still in development.`;
 
 
-bot.onText(/\/accept/, msg => {
-    //1console.log(msg);
-    // bot.sendMessage(msg.chat.id, 'Sending invite... Please Wait')
-    //     .then(msg => {
-    //         sendAcceptance(msg.chat.id);
-    //     });
+// Handle event callback_query
+bot.on('callback_query', (msg) => {
+    // console.log(msg);
+    /**
+     * Telegram clients will display a progress bar until you call answerCallbackQuery,
+     * so call it without specifying any of the optional parameters will not send notification.
+     */
+    bot.answerCallbackQuery({ callback_query_id: msg.id });
 });
 
 bot.onText(/Get Dcard/, async (msg) => {
