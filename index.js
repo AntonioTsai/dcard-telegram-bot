@@ -2,7 +2,9 @@ process.env.TZ = 'Asia/Taipei';
 const config = require('./config.js');
 const TelegramBot = require('node-telegram-bot-api');
 const token = config.token;
-const bot = new TelegramBot(token, {polling: true});
+const bot = new TelegramBot(token, { polling: true });
+const welcomeMessage = `Hello! I'm Dcard bot.
+By the way, I'm still in development.`;
 
 
 const getDcard = (chatId) => {
@@ -73,7 +75,7 @@ const setHeaders = (cookies = '', csrfToken = headers['x-csrf-token']) => {
             // Replace
             headers.cookie = headers.cookie.replace(reg, cookieContent);
             // Check d in cookie
-            if(!headers.cookie.match(cookieName)) {
+            if (!headers.cookie.match(cookieName)) {
                 headers.cookie += cookieContent;
             }
         });
@@ -94,4 +96,17 @@ bot.onText(/\/dcard/, msg => {
         .then(msg => {
             getDcard(msg.chat.id);
         });
+});
+
+/**
+ * Send welcome message when user send '/start',
+ * and set a "Get Dcard" custom keyboard on user's chat screen.
+ */
+bot.onText(/\/start/, (msg) => {
+    bot.sendMessage(msg.chat.id, welcomeMessage, {
+        "reply_markup": {
+            "keyboard": [["Get Dcard"]],
+            "resize_keyboard": true
+        }
+    })
 });
