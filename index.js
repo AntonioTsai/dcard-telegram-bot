@@ -29,6 +29,8 @@ bot.onText(/\/dcard/, msg => {
  * and set a "Get Dcard" custom keyboard on user's chat screen.
  */
 bot.onText(/\/start/, (msg) => {
+    console.log(`[${new Date().toLocaleString('zh-TW')}][User ${msg.chat.id}] ${msg.chat.username} start using this bot.`);
+
     bot.sendMessage(msg.chat.id, welcomeMessage, {
         "reply_markup": {
             "keyboard": [["Get Dcard"]],
