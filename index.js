@@ -35,6 +35,10 @@ bot.onText(/Get Dcard/, async (msg) => {
                 inline_keyboard: [[{
                     text: "Send Invitation",
                     callback_data: "sendInvitation"
+                },
+                {
+                    text: "Get Info",
+                    callback_data: "getInfo"
                 }]]
             }
         };
