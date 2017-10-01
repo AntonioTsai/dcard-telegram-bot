@@ -16,12 +16,33 @@ bot.onText(/\/accept/, msg => {
     //     });
 });
 
-bot.onText(/\/dcard/, msg => {
-    //1console.log(msg);
-    // bot.sendMessage(msg.chat.id, 'Dcard is loading... Please Wait')
-    //     .then(msg => {
-    //         getDcard(msg.chat.id);
-    //     });
+bot.onText(/Get Dcard/, async (msg) => {
+    try {
+        console.log(`[${new Date().toLocaleString('zh-TW')}][User ${msg.chat.id}] ${msg.chat.username} request today's dcard.`);
+
+        // Let user see status 'sending photo'
+        bot.sendChatAction(msg.chat.id, 'upload_photo');
+
+        const dcard = await Dcard.getDcard();
+        const options = {
+            caption: `${dcard.dcard.gender == "M" ? "男同學" : "女同學"} ${dcard.dcard.school} ${dcard.dcard.department}`,
+
+            /**
+             * dcard.accept == false => have not send invitation yet
+             * Show inline keyboard button to enable user to send request
+             */
+            reply_markup: dcard.accept ? {} : {
+                inline_keyboard: [[{
+                    text: "Send Invitation",
+                    callback_data: "sendInvitation"
+                }]]
+            }
+        };
+
+        bot.sendPhoto(msg.chat.id, dcard.dcard.avatar, options);
+    } catch (e) {
+        console.log(e);
+    }
 });
 
 /**
