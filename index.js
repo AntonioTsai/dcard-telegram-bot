@@ -36,5 +36,5 @@ bot.onText(/\/start/, (msg) => {
             "keyboard": [["Get Dcard"]],
             "resize_keyboard": true
         }
-    })
+    });
 });
