@@ -1,19 +1,9 @@
 process.env.TZ = 'Asia/Taipei';
-const request = require('request');
-const cheerio = require('cheerio');
-const Telegram = require('node-telegram-bot-api');
 const config = require('./config.js');
-const url = 'https://www.dcard.tw';
-const email = config.email;
-const pwd = config.password;
+const TelegramBot = require('node-telegram-bot-api');
 const token = config.token;
-const bot = new Telegram(token, {polling: true});
-const headers = {
-    cookie: '',
-    'content-type': 'application/json',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
-    'x-csrf-token': ''
-};
+const bot = new TelegramBot(token, {polling: true});
+
 
 const getDcard = (chatId) => {
     request(url + '/login', (error, response, body) => {
