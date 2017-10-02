@@ -8,14 +8,17 @@ const welcomeMessage = `Hello! I'm Dcard bot.
 By the way, I'm still in development.`;
 
 
-// Handle event callback_query
+// TODO Handle event callback_query
 bot.on('callback_query', (msg) => {
     // console.log(msg);
     /**
      * Telegram clients will display a progress bar until you call answerCallbackQuery,
      * so call it without specifying any of the optional parameters will not send notification.
      */
-    bot.answerCallbackQuery({ callback_query_id: msg.id });
+    bot.answerCallbackQuery({
+        callback_query_id: msg.id,
+        text: "Feature Coming Soon"
+    });
 });
 
 bot.onText(/Get Dcard/, async (msg) => {
