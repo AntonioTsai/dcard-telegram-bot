@@ -1,6 +1,6 @@
 {
   "name": "dcard-telegram-bot",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "description": "A telegram bot that show dcard today's friend",
   "main": "index.js",
   "dependencies": {
