@@ -1,9 +1,7 @@
 process.env.TZ = 'Asia/Taipei';
-const config = require('./config.js');
 const Dcard = require('./dcard.js');
 const TelegramBot = require('node-telegram-bot-api');
-const token = config.token;
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(process.env.TOKEN, { polling: true });
 const welcomeMessage = `Hello! I'm Dcard bot.
 By the way, I'm still in development.`;
 
