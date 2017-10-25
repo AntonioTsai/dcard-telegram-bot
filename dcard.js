@@ -1,4 +1,3 @@
-const config = require('./config.js');
 const request = require('request');
 var cookieJar = request.jar();
 const host = 'https://www.dcard.tw/'
@@ -107,8 +106,8 @@ const login = async () => {
             },
             json: true,
             body: {
-                email: config.email,
-                password: config.password
+                email: process.env.EMAIL,
+                password: process.env.PASSWORD
             }
         }
         const response = await promiseRequest(options);
