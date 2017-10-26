@@ -24,7 +24,7 @@ switch (NODE_ENV) {
         // Add URL of your app to env variable or enable Dyno Metadata
         // to get this automatically
         // See: https://devcenter.heroku.com/articles/dyno-metadata
-        const url = process.env.APP_URL || 'https://<app-name>.herokuapp.com:443';
+        const url = process.env.APP_URL || `https://${process.env.HEROKU_APP_NAME}.herokuapp.com:443`;
         bot = new TelegramBot(TOKEN, options);
 
         // This informs the Telegram servers of the new webhook.
