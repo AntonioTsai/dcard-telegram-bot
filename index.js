@@ -1,10 +1,40 @@
 process.env.TZ = 'Asia/Taipei';
 const Dcard = require('./dcard.js');
 const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(process.env.TOKEN, { polling: true });
+const TOKEN = process.env.TOKEN;
+const NODE_ENV = process.env.NODE_ENV;
 const welcomeMessage = `Hello! I'm Dcard bot.
 By the way, I'm still in development.`;
+var bot;
 
+
+switch (NODE_ENV) {
+    case "development":
+        bot = new TelegramBot(TOKEN, { polling: true });
+        break;
+    case "production":
+        const options = {
+            webHook: {
+                // Port to which you should bind is assigned to $PORT variable
+                // See: https://devcenter.heroku.com/articles/dynos#local-environment-variables
+                port: process.env.PORT
+            }
+        };
+        // Heroku routes from port :443 to $PORT
+        // Add URL of your app to env variable or enable Dyno Metadata
+        // to get this automatically
+        // See: https://devcenter.heroku.com/articles/dyno-metadata
+        const url = process.env.APP_URL || 'https://<app-name>.herokuapp.com:443';
+        bot = new TelegramBot(TOKEN, options);
+
+        // This informs the Telegram servers of the new webhook.
+        // Note: we do not need to pass in the cert, as it already provided
+        bot.setWebHook(`${url}/bot${TOKEN}`);
+        break;
+    default:
+        bot = new TelegramBot(TOKEN, { polling: true });
+        break;
+}
 
 // TODO Handle event callback_query
 bot.on('callback_query', (msg) => {
